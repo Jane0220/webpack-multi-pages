@@ -1,0 +1,1 @@
+window.functions=window.functions||{},window.functions.welcome=function(n){alert("hello:"+n)},window.functions=window.functions||{},window.functions.alert=function n(o){n(o)};

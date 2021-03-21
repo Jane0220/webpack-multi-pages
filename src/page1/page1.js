@@ -1,3 +1,4 @@
+import '../css/common.less';
 import '../css/main.css';
 (function() {
   const getTotal = () => {

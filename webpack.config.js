@@ -60,6 +60,20 @@ module.exports = env => {
           ],
         },
         {
+          test: /\.less$/i,
+          use: [
+            MiniCssExtractPlugin.loader,
+            "css-loader",
+            "less-loader",
+            {
+              loader: "less-loader",
+              options: {
+                additionalData: `@env: ${env.NODE_ENV};`,
+              },
+            },
+          ],
+        },
+        {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
           use: {

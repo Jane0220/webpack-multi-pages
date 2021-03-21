@@ -1,8 +1,12 @@
 body {
-  background-color: aquamarine;
   .page1 {
     img {
       width: 200px;
+      animation: 3s linear 1s slidein;
     }
   }
+}
+@keyframes slidein {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }

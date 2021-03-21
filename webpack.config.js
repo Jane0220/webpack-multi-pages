@@ -57,6 +57,21 @@ module.exports = env => {
             // 因为这个插件需要干涉模块转换的内容，所以需要使用它对应的 loader
             MiniCssExtractPlugin.loader,
             'css-loader',
+            {
+              loader: "postcss-loader",
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    [
+                      "postcss-preset-env",
+                      {
+                        // 其他选项
+                      },
+                    ],
+                  ],
+                },
+              }
+            }
           ],
         },
         {
@@ -71,6 +86,21 @@ module.exports = env => {
                 additionalData: `@env: ${env.NODE_ENV};`,
               },
             },
+            {
+              loader: "postcss-loader",
+              options: {
+                postcssOptions: {
+                  plugins: [
+                    [
+                      "postcss-preset-env",
+                      {
+                        // 其他选项
+                      },
+                    ],
+                  ],
+                },
+              }
+            }
           ],
         },
         {

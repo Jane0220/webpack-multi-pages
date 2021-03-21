@@ -1,0 +1,1 @@
+body .page1 img{width:200px;-webkit-animation:slidein 3s linear 1s;animation:slidein 3s linear 1s}@-webkit-keyframes slidein{0%{transform:scaleX(0)}to{transform:scaleX(1)}}@keyframes slidein{0%{transform:scaleX(0)}to{transform:scaleX(1)}}

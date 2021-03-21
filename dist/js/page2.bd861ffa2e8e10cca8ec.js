@@ -1,0 +1,1 @@
+(()=>{"use strict";window.functions=window.functions||{},window.functions.welcome=function(n){alert("hello:"+n+"hahaha")}})(),window.functions=window.functions||{},window.functions.alert=function n(o){n(o)};

@@ -1,4 +1,3 @@
-import '../css/common.less';
 import '../css/main.css';
 (function() {
   const getTotal = () => {
@@ -7,6 +6,7 @@ import '../css/main.css';
     }, 0)
     const person1 = {
       name: 'Kimi',
+      title: 'the king of Spa',
       age: 40
     }
     const person2 = {

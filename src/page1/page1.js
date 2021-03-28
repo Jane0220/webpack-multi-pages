@@ -1,4 +1,5 @@
 import '../css/main.css';
+import axios from 'axios';
 (function() {
   const getTotal = () => {
     const total = arguments.reduce((preValue, currentValue) => {

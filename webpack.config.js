@@ -21,13 +21,14 @@ module.exports = env => {
   }
   return {
     mode: 'development', // 指定构建模式
+    externals: {
+      'Vue': 'Vue',
+      'axios': 'axios'
+    },
     entry: { // 指定构建入口文件
       common: `./src/js/common.js`,
       page1: `./src/page1/page1.js`,
-      page2: [
-        `./src/js/common.js`,
-        `./src/page2/page2.js`
-      ]
+      page2: `./src/page2/page2.js`
     },
     output: {
       path: path.resolve(__dirname, 'dist'), // 指定构建生成文件所在路径
@@ -114,6 +115,10 @@ module.exports = env => {
                   '@babel/preset-env',
                   {
                     'useBuiltIns': 'entry',
+                    'corejs': {
+                      'version': 3,
+                      'proposals': true,
+                    },
                     'targets': '> 1%, last 2 versions, not ie <= 10'
                   }
                 ]
@@ -152,7 +157,7 @@ module.exports = env => {
         title: 'page2',
         template: 'src/page2/index.html', // 配置文件模板
         filename: 'page2.html',
-        chunks: ['page2', 'commonCss'],
+        chunks: ['page2'],
         cdn: {
           css: [],
           js: [
@@ -169,6 +174,18 @@ module.exports = env => {
         `...`,
         new CssMinimizerPlugin()
       ],
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          moduleMain: {
+            chunks: 'all',
+            test: path.resolve(__dirname, 'src/js/main.js'),
+            name: 'main',
+            filename: 'js/common/[name].[contenthash].bundle.js',
+            enforce: true
+          }
+        }
+      }
     }
   }
 }

@@ -4,6 +4,31 @@
     <meta charset="utf8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <!--ie 10及以下的处理-->
+    <style>
+      .__ie-alert {
+        text-align: center;
+        line-height: 30px;
+        padding: 10px;
+        background-color: #feefef;
+        color: #f86f6d;
+      }
+      .__ie-hide {
+        display: none;
+      }
+    </style>
+    <!--ie 9及以下的处理-->
+    <!--[if lt iE 10]>
+    <style>
+      .__lte_ie9_alert {
+        text-align: center;
+        line-height: 30px;
+        padding: 10px;
+        background-color: #feefef;
+        color: #f86f6d;
+      }
+    </style>
+    <![endif]-->
     <% for (var i in htmlWebpackPlugin.options.cdn && htmlWebpackPlugin.options.cdn.css) { %>
       <link rel="stylesheet" href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" />
     <% } %>
@@ -16,6 +41,19 @@
     <noscript>
       <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
+    <!--ie 10及以下的处理-->
+    <p class="__ie-alert __ie-hide" id="oldBrowserAlert">ie 10及以下显示：当前浏览器已停止维护！为确保您的上网安全，请尽快更换浏览器</p>
+    <script>
+      // 以下注释写法仅ie10及以下支持
+      /*@cc_on
+        document.getElementById('oldBrowserAlert').className = '__ie-alert'
+      @*/
+    </script>
+
+    <!--ie 9及以下的处理-->
+    <!--[if lt iE 10]>
+      <p class="__lte_ie9_alert">ie 9及以下显示：当前浏览器已停止维护！为确保您的上网安全，请尽快更换浏览器</p>
+    <![endif]-->
     <div class="page1">
       <p class="circle">page1</p>
       <img src="/images/img.jpg">

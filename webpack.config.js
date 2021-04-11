@@ -8,16 +8,17 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const assetsCDN = {
   css: [],
   js: {
-    vue: '//cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js',
-    axios: '//cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js'
+    vue: 'https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js',
+    axios: 'https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js'
   }
 }
 
 module.exports = env => {
   const IS_PROD = ['production'].includes(env.NODE_ENV)
-  const babelPlugins = []
+  const babelPlugins = ['@babel/plugin-proposal-class-properties']
   if (IS_PROD) {
     babelPlugins.push('transform-remove-console')
+    babelPlugins.push('@babel/plugin-transform-runtime')
   }
   return {
     mode: 'development', // 指定构建模式
@@ -33,9 +34,33 @@ module.exports = env => {
     output: {
       path: path.resolve(__dirname, 'dist'), // 指定构建生成文件所在路径
       filename: 'js/[name].[contenthash].js', // 指定构建生成的文件名
+      libraryTarget: 'umd',
+      clean: true,
+      environment: {
+        // The environment supports arrow functions ('() => { ... }').
+        arrowFunction: false,
+        // The environment supports BigInt as literal (123n).
+        bigIntLiteral: false,
+        // The environment supports const and let for variable declarations.
+        const: false,
+        // The environment supports destructuring ('{ a, b } = obj').
+        destructuring: false,
+        // The environment supports an async import() function to import EcmaScript modules.
+        dynamicImport: false,
+        // The environment supports 'for of' iteration ('for (const x of array) { ... }').
+        forOf: false,
+        // The environment supports ECMAScript Module syntax to import ECMAScript modules (import ... from '...').
+        module: false
+      }
+    },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src/')
+      }
     },
     devServer: {
       contentBase: path.join(__dirname, "dist"),
+      hot: true,
       compress: true,
       open: true,
       port: 9000,
@@ -181,6 +206,12 @@ module.exports = env => {
             chunks: 'all',
             test: path.resolve(__dirname, 'src/js/main.js'),
             name: 'main',
+            filename: 'js/common/[name].[contenthash].bundle.js',
+            enforce: true
+          },
+          componentAlert: {
+            test: path.resolve(__dirname, 'src/components/alert'),
+            name: 'componentAlert',
             filename: 'js/common/[name].[contenthash].bundle.js',
             enforce: true
           }

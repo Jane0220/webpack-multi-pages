@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -16,9 +17,51 @@ const assetsCDN = {
 module.exports = env => {
   const IS_PROD = ['production'].includes(env.NODE_ENV)
   const babelPlugins = ['@babel/plugin-proposal-class-properties']
+  const plugins = [
+    new CleanWebpackPlugin(),
+    new CopyPlugin({
+      patterns: [
+        { from: 'src/images', to: 'images' },
+        { from: 'src/scripts', to: 'scripts' }
+      ]
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[contenthash].css' // 这里也可以使用 [hash]
+    }),
+    new HtmlWebpackPlugin({
+      title: 'page1',
+      cache: true,
+      template: 'src/page1/index.html', // 配置文件模板
+      filename: 'page1.html',
+      chunks: ['common', 'page1'],
+      cdn: {
+        css: [],
+        js: [
+          assetsCDN.js.vue,
+          assetsCDN.js.axios
+        ]
+      }
+    }),
+    new HtmlWebpackPlugin({
+      title: 'page2',
+      cache: true,
+      template: 'src/page2/index.html', // 配置文件模板
+      filename: 'page2.html',
+      chunks: ['page2'],
+      cdn: {
+        css: [],
+        js: [
+          assetsCDN.js.vue,
+          assetsCDN.js.axios
+        ]
+      }
+    }),
+  ]
   if (IS_PROD) {
     babelPlugins.push('transform-remove-console')
     babelPlugins.push('@babel/plugin-transform-runtime')
+  } else {
+    plugins.push(new webpack.HotModuleReplacementPlugin())
   }
   return {
     mode: 'development', // 指定构建模式
@@ -132,66 +175,34 @@ module.exports = env => {
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
-          use: {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                [
-                  '@babel/preset-env',
-                  {
-                    'useBuiltIns': 'entry',
-                    'corejs': {
-                      'version': 3,
-                      'proposals': true,
-                    },
-                    'targets': '> 1%, last 2 versions, not ie <= 10'
-                  }
-                ]
-              ],
-              plugins: babelPlugins
+          use: [
+            'thread-loader',
+            'cache-loader',
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+                presets: [
+                  [
+                    '@babel/preset-env',
+                    {
+                      'useBuiltIns': 'entry',
+                      'corejs': {
+                        'version': 3,
+                        'proposals': true,
+                      },
+                      'targets': '> 1%, last 2 versions, not ie <= 10'
+                    }
+                  ]
+                ],
+                plugins: babelPlugins
+              }
             }
-          }
+          ]
         },
       ],
     },
-    plugins: [
-      new CleanWebpackPlugin(),
-      new CopyPlugin({
-        patterns: [
-          { from: 'src/images', to: 'images' },
-          { from: 'src/scripts', to: 'scripts' }
-        ]
-      }),
-      new MiniCssExtractPlugin({
-        filename: 'css/[name].[contenthash].css' // 这里也可以使用 [hash]
-      }),
-      new HtmlWebpackPlugin({
-        title: 'page1',
-        template: 'src/page1/index.html', // 配置文件模板
-        filename: 'page1.html',
-        chunks: ['common', 'page1'],
-        cdn: {
-          css: [],
-          js: [
-            assetsCDN.js.vue,
-            assetsCDN.js.axios
-          ]
-        }
-      }),
-      new HtmlWebpackPlugin({
-        title: 'page2',
-        template: 'src/page2/index.html', // 配置文件模板
-        filename: 'page2.html',
-        chunks: ['page2'],
-        cdn: {
-          css: [],
-          js: [
-            assetsCDN.js.vue,
-            assetsCDN.js.axios
-          ]
-        }
-      }),
-    ],
+    plugins: plugins,
     optimization: {
       minimize: true,
       minimizer: [
